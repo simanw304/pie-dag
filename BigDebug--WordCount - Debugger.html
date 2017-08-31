@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html><head>
+				<meta http-equiv="Content-type" content="text/html; charset=UTF-8"><link rel="stylesheet" href="BigDebug--WordCount%20-%20Debugger_files/bootstrap.css" type="text/css"><link rel="stylesheet" href="BigDebug--WordCount%20-%20Debugger_files/vis.css" type="text/css"><link rel="stylesheet" href="BigDebug--WordCount%20-%20Debugger_files/webui.css" type="text/css"><link rel="stylesheet" href="BigDebug--WordCount%20-%20Debugger_files/timeline-view.css" type="text/css"><link rel="stylesheet" href="BigDebug--WordCount%20-%20Debugger_files/codemirror.css" type="text/css"><link rel="stylesheet" href="BigDebug--WordCount%20-%20Debugger_files/ambiance.css" type="text/css"><script src="BigDebug--WordCount%20-%20Debugger_files/sorttable.js"></script><script src="BigDebug--WordCount%20-%20Debugger_files/jquery-1.js"></script><script src="BigDebug--WordCount%20-%20Debugger_files/vis.js"></script><script src="BigDebug--WordCount%20-%20Debugger_files/bootstrap-tooltip.js"></script><script src="BigDebug--WordCount%20-%20Debugger_files/initialize-tooltips.js"></script><script src="BigDebug--WordCount%20-%20Debugger_files/table.js"></script><script src="BigDebug--WordCount%20-%20Debugger_files/additional-metrics.js"></script><script src="BigDebug--WordCount%20-%20Debugger_files/timeline-view.js"></script><script src="BigDebug--WordCount%20-%20Debugger_files/codemirror.js"></script><script src="BigDebug--WordCount%20-%20Debugger_files/clike.js"></script><script src="BigDebug--WordCount%20-%20Debugger_files/matchbrackets.js"></script><script src="BigDebug--WordCount%20-%20Debugger_files/active-line.js"></script><script src="BigDebug--WordCount%20-%20Debugger_files/canvasjs.js"></script><script src="BigDebug--WordCount%20-%20Debugger_files/log-view.js"></script><script src="BigDebug--WordCount%20-%20Debugger_files/webui.js"></script><script src="BigDebug--WordCount%20-%20Debugger_files/bootstrap.js"></script><script>setUIRoot('')</script><link rel="stylesheet" href="BigDebug--WordCount%20-%20Debugger_files/spark-dag-viz.css" type="text/css"><script src="BigDebug--WordCount%20-%20Debugger_files/d3.js"></script><script src="BigDebug--WordCount%20-%20Debugger_files/dagre-d3.js"></script><script src="BigDebug--WordCount%20-%20Debugger_files/graphlib-dot.js"></script><script src="BigDebug--WordCount%20-%20Debugger_files/spark-dag-viz.js"></script>
+
+<link rel="stylesheet" href="BigDebug--WordCount%20-%20Debugger_files/pie-dag.css" type="text/css">
+<script src="BigDebug--WordCount%20-%20Debugger_files/pie-dag.js"></script>
+
+<script src="http://d3js.org/d3.v4.min.js" charset="utf-8"></script>
+<script src="http://viz-js.com/bower_components/viz.js/viz-lite.js"></script>
+<script src="BigDebug--WordCount%20-%20Debugger_files/d3-graphviz.min.js" charset="utf-8"></script>
+				<title>
+				BigDebug--WordCount
+				-
+				Debugger
+			</title>
+			</head>
+			<body onload="createCode();initWebSocket(2);chartRender()">
+				<div class="navbar navbar-static-top">
+					<div class="navbar-inner">
+						<div class="brand">
+							<a href="http://rstudio.cs.ucla.edu:4040/" class="brand">
+								<img src="BigDebug--WordCount%20-%20Debugger_files/spark-logo-77x50px-hd.png">
+								<span class="version">
+									2.1.1-SNAPSHOT
+								</span>
+							</a>
+						</div>
+						<p class="navbar-text pull-right">
+							<strong title="BigDebug--WordCount">
+								BigDebug--WordCount
+							</strong>
+							application UI
+						</p>
+						<ul class="nav">
+							<li class="">
+				<a href="http://rstudio.cs.ucla.edu:4040/jobs/">
+					Jobs
+				</a>
+			</li><li class="">
+				<a href="http://rstudio.cs.ucla.edu:4040/stages/">
+					Stages
+				</a>
+			</li><li class="">
+				<a href="http://rstudio.cs.ucla.edu:4040/storage/">
+					Storage
+				</a>
+			</li><li class="">
+				<a href="http://rstudio.cs.ucla.edu:4040/environment/">
+					Environment
+				</a>
+			</li><li class="">
+				<a href="http://rstudio.cs.ucla.edu:4040/executors/">
+					Executors
+				</a>
+			</li><li class="active">
+				<a href="http://rstudio.cs.ucla.edu:4040/debugger/">
+					Debugger
+				</a>
+			</li>
+						</ul>
+					</div>
+				</div>
+				<div class="container-fluid">
+					<div class="row-fluid">
+						<div class="span12">
+							<h3 style="vertical-align: bottom; display: inline-block;">
+								Debugger
+							</h3>
+						</div>
+					</div><div>
+				<div id="container2">
+					<div id="container1">
+						<div id="col1">
+
+							<!--      <script src={path_d3_js} charset="utf-8"></script>
+          <script src={path_debugger_js} charset="utf-8"></script>
+          <script src={path_dag_viz} charset="utf-8"></script>
+-->
+
+							<div class="well well-large" style="text-align:center;border:1px solid red">
+								<h4>Breakpoint Controls</h4>
+								<div>
+									<a class="btn  btn-success" type="button" href="http://rstudio.cs.ucla.edu:4040/debugger/do?command=resume">Resume</a>
+									<a class="btn btn-success" type="button" href="http://rstudio.cs.ucla.edu:4040/debugger/do?command=stepover">Step Over</a>
+								</div>
+								<br>
+								<div>
+									<input id="crashlineinfo" value="" type="hidden">
+									<input id="breaklineinfo" value="0" type="hidden"> <h4>Current Breakpoint location is after the
+									
+								</h4>
+								</div>
+							</div>
+							<br>
+							<br>
+							<div>
+								<div>
+			<span id="job-dag-viz" class="expand-dag-viz" onclick="toggleDagViz(true);">
+				<span class="expand-dag-viz-arrow arrow-open"></span>
+				<a data-toggle="tooltip" title="" data-placement="right" data-original-title="Shows a graph of stages executed for this job, each of which can contain
+       multiple RDD operations (e.g. map() and filter()), and of RDDs inside each operation
+       (shown as dots).">
+					DAG Visualization
+				</a>
+			</span>
+			<div id="dag-viz-graph" style="display: block;"><svg class="job" viewBox="-16 -50 403.6166534423828 645" width="403.6166534423828" height="645"><a xlink:href="null&amp;expandDagViz=true"><g id="graph_0"><g class="output"><g class="clusters"><g class="cluster_stage_0 cluster stage" name="Stage 0" style="opacity: 1;"><a xlink:href="http://rstudio.cs.ucla.edu:4040undefined"><rect width="187.16666412353516" height="613" x="0" y="-34" rx="4" ry="4"></rect></a><g class="label" text-anchor="end" transform="translate(200.7999973297119,-19.5)"><g transform="translate(-20.883333206176758,-7.25)"><text><tspan xml:space="preserve" dy="1em" x="1">Stage 0</tspan></text></g></g></g><g class="cluster_0 cluster" name="hadoopFile" style="opacity: 1;"><a xlink:href="http://rstudio.cs.ucla.edu:4040/debugger/rddst?id=0"><rect width="118.94166564941406" height="76" style="fill:#A0DFFF; stroke:#3EC0FF" x="34.11249923706055" y="0.5" rx="4" ry="4"></rect></a><g class="label" text-anchor="end" transform="translate(175.77916526794434,15)"><g transform="translate(-29.975000381469727,-7.25)"><text><tspan xml:space="preserve" dy="1em" x="1"><a xlink:href="http://rstudio.cs.ucla.edu:4040/debugger/rddst?id=0">hadoopFile</a></tspan></text></g></g></g><g class="cluster_1 cluster" name="map" style="opacity: 1;"><a xlink:href="http://rstudio.cs.ucla.edu:4040/debugger/rddst?id=1"><rect width="113.58333206176758" height="76" style="fill:#A0DFFF; stroke:#3EC0FF" x="36.79166603088379" y="97" rx="4" ry="4"></rect></a><g class="label" text-anchor="end" transform="translate(155.35833168029785,111.5)"><g transform="translate(-12.233333587646484,-7.25)"><text><tspan xml:space="preserve" dy="1em" x="1"><a xlink:href="http://rstudio.cs.ucla.edu:4040/debugger/rddst?id=1">map</a></tspan></text></g></g></g><g class="cluster_2 cluster" name="filterWithProfiling" style="opacity: 1;"><a xlink:href="http://rstudio.cs.ucla.edu:4040/debugger/rddst?id=2"><rect width="137.04166412353516" height="76" style="fill:#A0DFFF; stroke:#3EC0FF" x="25.0625" y="193.5" rx="4" ry="4"></rect></a><g class="label" text-anchor="end" transform="translate(200.1374969482422,208)"><g transform="translate(-45.28333282470703,-7.25)"><text><tspan xml:space="preserve" dy="1em" x="1"><a xlink:href="http://rstudio.cs.ucla.edu:4040/debugger/rddst?id=2">filterWithProfiling</a></tspan></text></g></g></g><g class="cluster_3 cluster" name="flatMapWithProfiling" style="opacity: 1;"><a xlink:href="http://rstudio.cs.ucla.edu:4040/debugger/rddst?id=3"><rect width="147.16666412353516" height="76" style="fill:#A0DFFF; stroke:#3EC0FF" x="20" y="290" rx="4" ry="4"></rect></a><g class="label" text-anchor="end" transform="translate(213.76666259765625,304.5)"><g transform="translate(-53.849998474121094,-7.25)"><text><tspan xml:space="preserve" dy="1em" x="1"><a xlink:href="http://rstudio.cs.ucla.edu:4040/debugger/rddst?id=3">flatMapWithProfiling</a></tspan></text></g></g></g><g class="cluster_4 cluster" name="watchpoint" style="opacity: 1;"><a xlink:href="http://rstudio.cs.ucla.edu:4040/debugger/watchpoint?id=4"><rect width="118.79999923706055" height="76" style="fill:#99FF99; stroke:#7ACC7A" x="34.183332443237305" y="386.5" rx="4" ry="4"></rect></a><g class="label" text-anchor="end" transform="translate(175.58333206176758,401)"><g transform="translate(-29.850000381469727,-7.25)"><text><tspan xml:space="preserve" dy="1em" x="1"><a xlink:href="http://rstudio.cs.ucla.edu:4040/debugger/watchpoint?id=4">watchpoint</a></tspan></text></g></g></g><g class="cluster_5 cluster" name="map" style="opacity: 1;"><a xlink:href="http://rstudio.cs.ucla.edu:4040/debugger/rddst?id=5"><rect width="113.58333206176758" height="76" style="fill:#A0DFFF; stroke:#3EC0FF" x="36.79166603088379" y="483" rx="4" ry="4"></rect></a><g class="label" text-anchor="end" transform="translate(155.35833168029785,497.5)"><g transform="translate(-12.233333587646484,-7.25)"><text><tspan xml:space="preserve" dy="1em" x="1"><a xlink:href="http://rstudio.cs.ucla.edu:4040/debugger/rddst?id=5">map</a></tspan></text></g></g></g></g><g class="edgePaths"><g class="edgePath" style="opacity: 1;"><path class="path" d="M93.58333206176758,53.25L93.58333206176758,57.125C93.58333206176758,61,93.58333206176758,68.75,93.58333206176758,75.95833333333333C93.58333206176758,83.16666666666666,93.58333206176758,89.83333333333333,93.58333206176758,96.5C93.58333206176758,103.16666666666666,93.58333206176758,109.83333333333331,93.58333206176758,117.04166666666666C93.58333206176758,124.24999999999999,93.58333206176758,132,93.58333206176758,135.87499999999997L93.58333206176758,139.75" marker-end="url(#marker-arrow)" style="fill: none;"></path><defs><marker id="arrowhead165" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="strokeWidth" markerWidth="8" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker></defs></g><g class="edgePath" style="opacity: 1;"><path class="path" d="M93.58333206176758,149.75L93.58333206176758,153.625C93.58333206176758,157.5,93.58333206176758,165.25,93.58333206176758,172.45833333333331C93.58333206176758,179.66666666666666,93.58333206176758,186.33333333333331,93.58333206176758,193C93.58333206176758,199.66666666666666,93.58333206176758,206.33333333333331,93.58333206176758,213.54166666666666C93.58333206176758,220.75,93.58333206176758,228.5,93.58333206176758,232.375L93.58333206176758,236.25" marker-end="url(#marker-arrow)" style="fill: none;"></path><defs><marker id="arrowhead166" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="strokeWidth" markerWidth="8" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker></defs></g><g class="edgePath" style="opacity: 1;"><path class="path" d="M93.58333206176758,246.25L93.58333206176758,250.12499999999997C93.58333206176758,254,93.58333206176758,261.75,93.58333206176758,268.9583333333333C93.58333206176758,276.16666666666663,93.58333206176758,282.8333333333333,93.58333206176758,289.5C93.58333206176758,296.16666666666663,93.58333206176758,302.8333333333333,93.58333206176758,310.04166666666663C93.58333206176758,317.25,93.58333206176758,325,93.58333206176758,328.87499999999994L93.58333206176758,332.75" marker-end="url(#marker-arrow)" style="fill: none;"></path><defs><marker id="arrowhead167" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="strokeWidth" markerWidth="8" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker></defs></g><g class="edgePath" style="opacity: 1;"><path class="path" d="M93.58333206176758,342.75L93.58333206176758,346.625C93.58333206176758,350.5,93.58333206176758,358.25,93.58333206176758,365.4583333333333C93.58333206176758,372.66666666666663,93.58333206176758,379.3333333333333,93.58333206176758,386C93.58333206176758,392.66666666666663,93.58333206176758,399.33333333333326,93.58333206176758,406.54166666666663C93.58333206176758,413.74999999999994,93.58333206176758,421.49999999999994,93.58333206176758,425.3749999999999L93.58333206176758,429.25" marker-end="url(#marker-arrow)" style="fill: none;"></path><defs><marker id="arrowhead168" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="strokeWidth" markerWidth="8" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker></defs></g><g class="edgePath" style="opacity: 1;"><path class="path" d="M93.58333206176758,439.25L93.58333206176758,443.12499999999994C93.58333206176758,447,93.58333206176758,454.75,93.58333206176758,461.95833333333326C93.58333206176758,469.16666666666663,93.58333206176758,475.83333333333326,93.58333206176758,482.49999999999994C93.58333206176758,489.16666666666663,93.58333206176758,495.8333333333333,93.58333206176758,503.04166666666663C93.58333206176758,510.25,93.58333206176758,518,93.58333206176758,521.875L93.58333206176758,525.75" marker-end="url(#marker-arrow)" style="fill: none;"></path><defs><marker id="arrowhead169" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="strokeWidth" markerWidth="8" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker></defs></g></g><g class="edgeLabels"><g class="edgeLabel" style="opacity: 1;" transform=""><g transform="translate(0,0)" class="label"><text><tspan xml:space="preserve" dy="1em" x="1"></tspan></text></g></g><g class="edgeLabel" style="opacity: 1;" transform=""><g transform="translate(0,0)" class="label"><text><tspan xml:space="preserve" dy="1em" x="1"></tspan></text></g></g><g class="edgeLabel" style="opacity: 1;" transform=""><g transform="translate(0,0)" class="label"><text><tspan xml:space="preserve" dy="1em" x="1"></tspan></text></g></g><g class="edgeLabel" style="opacity: 1;" transform=""><g transform="translate(0,0)" class="label"><text><tspan xml:space="preserve" dy="1em" x="1"></tspan></text></g></g><g class="edgeLabel" style="opacity: 1;" transform=""><g transform="translate(0,0)" class="label"><text><tspan xml:space="preserve" dy="1em" x="1"></tspan></text></g></g></g><g class="nodes"><g class="node_0 node" name="README.md [0]\ntextFile at WordCount.scala:28" style="opacity: 1;" transform="translate(93.58333206176758,48.25)"><circle x="-5" y="-5" r="5" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="README.md [0]\ntextFile at WordCount.scala:28"></circle><g class="label" transform="translate(0,0)"><g transform="translate(0,0)"><text style="font-size: 0px"><tspan xml:space="preserve" dy="1em" x="1">README.md [0]</tspan><tspan xml:space="preserve" dy="1em" x="1">textFile at WordCount.scala:28</tspan></text></g></g><g></g></g><g class="node_1 node" name="README.md [1]\ntextFile at WordCount.scala:28" style="opacity: 1;" transform="translate(93.58333206176758,144.75)"><circle x="-5" y="-5" r="5" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="README.md [1]\ntextFile at WordCount.scala:28"></circle><g class="label" transform="translate(0,0)"><g transform="translate(0,0)"><text style="font-size: 0px"><tspan xml:space="preserve" dy="1em" x="1">README.md [1]</tspan><tspan xml:space="preserve" dy="1em" x="1">textFile at WordCount.scala:28</tspan></text></g></g><g></g></g><g class="node_2 node" name="MapPartitionsLRDD [2]\nfilterWithProfiling at WordCount.scala:28" style="opacity: 1;" transform="translate(93.58333206176758,241.25)"><circle x="-5" y="-5" r="5" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="MapPartitionsLRDD [2]\nfilterWithProfiling at WordCount.scala:28"></circle><g class="label" transform="translate(0,0)"><g transform="translate(0,0)"><text style="font-size: 0px"><tspan xml:space="preserve" dy="1em" x="1">MapPartitionsLRDD [2]</tspan><tspan xml:space="preserve" dy="1em" x="1">filterWithProfiling at WordCount.scala:28</tspan></text></g></g><g></g></g><g class="node_3 node" name="MapPartitionsLRDD [3]\nflatMapWithProfiling at WordCount.scala:30" style="opacity: 1;" transform="translate(93.58333206176758,337.75)"><circle x="-5" y="-5" r="5" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="MapPartitionsLRDD [3]\nflatMapWithProfiling at WordCount.scala:30"></circle><g class="label" transform="translate(0,0)"><g transform="translate(0,0)"><text style="font-size: 0px"><tspan xml:space="preserve" dy="1em" x="1">MapPartitionsLRDD [3]</tspan><tspan xml:space="preserve" dy="1em" x="1">flatMapWithProfiling at WordCount.scala:30</tspan></text></g></g><g></g></g><g class="node_4 node" name="WatchPointLRDD [4]\nwatchpoint at WordCount.scala:35" style="opacity: 1;" transform="translate(93.58333206176758,434.25)"><circle x="-5" y="-5" r="5" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="WatchPointLRDD [4]\nwatchpoint at WordCount.scala:35"></circle><g class="label" transform="translate(0,0)"><g transform="translate(0,0)"><text style="font-size: 0px"><tspan xml:space="preserve" dy="1em" x="1">WatchPointLRDD [4]</tspan><tspan xml:space="preserve" dy="1em" x="1">watchpoint at WordCount.scala:35</tspan></text></g></g><g></g></g><g class="node_5 node" name="MapPartitionsLRDD [5]\nmap at WordCount.scala:37" style="opacity: 1;" transform="translate(93.58333206176758,530.75)"><circle x="-5" y="-5" r="5" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="MapPartitionsLRDD [5]\nmap at WordCount.scala:37"></circle><g class="label" transform="translate(0,0)"><g transform="translate(0,0)"><text style="font-size: 0px"><tspan xml:space="preserve" dy="1em" x="1">MapPartitionsLRDD [5]</tspan><tspan xml:space="preserve" dy="1em" x="1">map at WordCount.scala:37</tspan></text></g></g><g></g></g></g></g></g></a><a xlink:href="null&amp;expandDagViz=true"><g id="graph_1" transform="translate(227.16666412353516, 0)"><g class="output"><g class="clusters"><g class="cluster_stage_1 cluster stage" name="Stage 1" style="opacity: 1;"><a xlink:href="http://rstudio.cs.ucla.edu:4040undefined"><rect width="144.4499969482422" height="227" x="0" y="-34" rx="4" ry="4"></rect></a><g class="label" text-anchor="end" transform="translate(158.08333015441895,-19.5)"><g transform="translate(-20.883333206176758,-7.25)"><text><tspan xml:space="preserve" dy="1em" x="1">Stage 1</tspan></text></g></g></g><g class="cluster_6 cluster" name="reduceByKey" style="opacity: 1;"><a xlink:href="http://rstudio.cs.ucla.edu:4040/debugger/rddst?id=6"><rect width="104.44999694824219" height="76" style="fill:#A0DFFF; stroke:#3EC0FF" x="20" y="0.5" rx="4" ry="4"></rect></a><g class="label" text-anchor="end" transform="translate(152.98332977294922,15)"><g transform="translate(-35.78333282470703,-7.25)"><text><tspan xml:space="preserve" dy="1em" x="1"><a xlink:href="http://rstudio.cs.ucla.edu:4040/debugger/rddst?id=6">reduceByKey</a></tspan></text></g></g></g><g class="cluster_7 cluster" name="map" style="opacity: 1;"><a xlink:href="http://rstudio.cs.ucla.edu:4040/debugger/rddst?id=7"><rect width="92.2249984741211" height="76" style="fill:#A0DFFF; stroke:#3EC0FF" x="26.112499237060547" y="97" rx="4" ry="4"></rect></a><g class="label" text-anchor="end" transform="translate(123.32083129882812,111.5)"><g transform="translate(-12.233333587646484,-7.25)"><text><tspan xml:space="preserve" dy="1em" x="1"><a xlink:href="http://rstudio.cs.ucla.edu:4040/debugger/rddst?id=7">map</a></tspan></text></g></g></g></g><g class="edgePaths"><g class="edgePath" style="opacity: 1;"><path class="path" d="M72.2249984741211,53.25L72.22499847412108,57.125C72.2249984741211,61,72.2249984741211,68.75,72.22499847412108,75.95833333333333C72.2249984741211,83.16666666666666,72.2249984741211,89.83333333333333,72.22499847412108,96.5C72.2249984741211,103.16666666666666,72.2249984741211,109.83333333333331,72.22499847412108,117.04166666666666C72.2249984741211,124.24999999999999,72.2249984741211,132,72.22499847412108,135.87499999999997L72.2249984741211,139.75" marker-end="url(#marker-arrow)" style="fill: none;"></path><defs><marker id="arrowhead226" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="strokeWidth" markerWidth="8" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker></defs></g></g><g class="edgeLabels"><g class="edgeLabel" style="opacity: 1;" transform=""><g transform="translate(0,0)" class="label"><text><tspan xml:space="preserve" dy="1em" x="1"></tspan></text></g></g></g><g class="nodes"><g class="node_6 node" name="ShuffledLRDD [6]\nreduceByKey at WordCount.scala:39" style="opacity: 1;" transform="translate(72.2249984741211,48.25)"><circle x="-5" y="-5" r="5" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="ShuffledLRDD [6]\nreduceByKey at WordCount.scala:39"></circle><g class="label" transform="translate(0,0)"><g transform="translate(0,0)"><text style="font-size: 0px"><tspan xml:space="preserve" dy="1em" x="1">ShuffledLRDD [6]</tspan><tspan xml:space="preserve" dy="1em" x="1">reduceByKey at WordCount.scala:39</tspan></text></g></g><g></g></g><g class="node_7 node" name="MapPartitionsLRDD [7]\nmap at WordCount.scala:40" style="opacity: 1;" transform="translate(72.2249984741211,144.75)"><circle x="-5" y="-5" r="5" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="MapPartitionsLRDD [7]\nmap at WordCount.scala:40"></circle><g class="label" transform="translate(0,0)"><g transform="translate(0,0)"><text style="font-size: 0px"><tspan xml:space="preserve" dy="1em" x="1">MapPartitionsLRDD [7]</tspan><tspan xml:space="preserve" dy="1em" x="1">map at WordCount.scala:40</tspan></text></g></g><g></g></g></g></g></g></a><g id="cross-stage-edges"><path d="M98.58332824707031,530.75L111.63721669514973,530.75C124.69110514322917,530.75,150.79888203938802,530.75,170.37971471150718,450.3333333333333C189.9605473836263,369.91666666666663,203.01443583170573,209.08333333333331,222.59526850382485,128.66666666666666C242.17610117594398,48.25,268.2838780721029,48.25,281.3377665201823,48.24999999999999L294.3916549682617,48.25" marker-end="url(#marker-arrow)"></path></g><marker id="marker-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="strokeWidth" markerWidth="8" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker></svg></div>
+
+<span id="job-dag-viz2" class="expand-dag-viz" onclick="toggleDagViz2(true);">
+				<span class="expand-dag-viz-arrow2 arrow-closed"></span>
+				<a data-toggle="tooltip" title="" data-placement="right" data-original-title="Shows a graph of stages executed for this job, each of which can contain
+       multiple RDD operations (e.g. map() and filter()), and of RDDs inside each operation
+       (shown as dots).">
+					PIE DAG Visualization
+				</a>
+			</span>
+<div id="dag-viz-metadata" style="display:none">
+	<div class="stage-metadata" stage-id="0" skipped="false">
+		<div class="dot-file">digraph G {
+		  subgraph clusterstage_0 {
+		    label="Stage 0";
+		    subgraph cluster0 {
+		    
+		      label="hadoopFile" 
+		      url="/debugger/rddst?id=0" style="fill:#A0DFFF; stroke:#3EC0FF";
+		      0 [label="README.md [0]\ntextFile at WordCount.scala:28"];
+		    }
+		    subgraph cluster1 {
+		      label="map" 
+		      url="/debugger/rddst?id=1" style="fill:#A0DFFF; stroke:#3EC0FF";
+		      1 [label="README.md [1]\ntextFile at WordCount.scala:28"];
+		    }
+		    subgraph cluster2 {
+		      label="filterWithProfiling" 
+		      url="/debugger/rddst?id=2" style="fill:#A0DFFF; stroke:#3EC0FF";
+		      2 [label="MapPartitionsLRDD [2]\nfilterWithProfiling at WordCount.scala:28"];
+		    }
+		    subgraph cluster3 {
+		      label="flatMapWithProfiling" 
+		      url="/debugger/rddst?id=3" style="fill:#A0DFFF; stroke:#3EC0FF";
+		      3 [label="MapPartitionsLRDD [3]\nflatMapWithProfiling at WordCount.scala:30"];
+		    }
+		    subgraph cluster4 {
+		      label="watchpoint" 
+		      url="/debugger/watchpoint?id=4" style="fill:#99FF99; stroke:#7ACC7A";
+		      4 [label="WatchPointLRDD [4]\nwatchpoint at WordCount.scala:35"];
+		    }
+		    subgraph cluster5 {
+		      label="map" 
+		      url="/debugger/rddst?id=5" style="fill:#A0DFFF; stroke:#3EC0FF";
+		      5 [label="MapPartitionsLRDD [5]\nmap at WordCount.scala:37"];
+		    }
+		  }
+		  0-&gt;1;
+		  1-&gt;2;
+		  2-&gt;3;
+		  3-&gt;4;
+		  4-&gt;5;
+		}</div>
+	</div>
+	<div class="stage-metadata" stage-id="1" skipped="false">
+		<div class="dot-file">digraph G {
+		  subgraph clusterstage_1 {
+		    label="Stage 1";
+		    subgraph cluster6 {
+		      label="reduceByKey" 
+		      url="/debugger/rddst?id=6" style="fill:#A0DFFF; stroke:#3EC0FF";
+		      6 [label="ShuffledLRDD [6]\nreduceByKey at WordCount.scala:39"];
+		    }
+		    subgraph cluster7 {
+		      label="map" 
+		      url="/debugger/rddst?id=7" style="fill:#A0DFFF; stroke:#3EC0FF";
+		      7 [label="MapPartitionsLRDD [7]\nmap at WordCount.scala:40"];
+		    }
+		  }
+		  6-&gt;7;
+		}</div>
+	<div class="incoming-edge">5,6</div>
+	</div>
+</div>
+
+
+<div id="col3"> 
+	<div id="graph" style="display:block"> </div>
+	<div id="incoming-edge" style="display:none" >6,7</div>
+</div>
+<script>
+var dotIndex = 0;
+var svgContainer = d3.select("#col3").select("#graph").append("svg").attr("id","dag")
+                     .attr("width", 300)
+                     .attr("height", 900);
+var pieDagContainer = svgContainer.append("g").attr("id","pieDagContainer");
+var graphviz = pieDagContainer.graphviz();
+
+//receive cross stage edges
+var crossStageEdges = [];
+d3.selectAll("#incoming-edge").each(function (v) {
+            var edge = d3.select(this).text().split(","); // e.g. 3,4 => [3, 4]
+            crossStageEdges.push(edge);
+        });
+//render the PIE DAG
+function render() {
+    var dotLines = dots[dotIndex];
+    var dot = dotLines.join('');
+    var transition1 = d3.transition()
+        .ease(d3.easeLinear)
+        .duration(0);
+
+    graphviz
+        .dot(dot)
+        .transition(transition1)
+        .render();
+
+   drawCrossStageEdges(crossStageEdges, svgContainer);
+}
+/*
+ * Helper function to draw edges that cross stage boundaries.
+ * We need to do this manually because we render each stage separately in dagre-d3.
+ */
+function drawCrossStageEdges(edges, svgContainer) {
+    if (edges.length == 0) {
+        return;
+    }
+    // Draw the paths first
+    var edgesContainer = svgContainer.append("g").attr("id", "cross-stage-edges");
+    for (var i = 0; i < edges.length; i++) {
+        var fromRDDId = edges[i][0];
+        var toRDDId = edges[i][1];
+        connectRDDs(fromRDDId, toRDDId, edgesContainer, svgContainer);
+    }
+}
+
+/*
+ * Helper function to compute the absolute
+ * position of the specified element in our graph.
+ */
+function getAbsolutePosition(d3selection) {
+    if (d3selection.empty()) {
+        throw "Attempted to get absolute position of an empty selection.";
+    }
+    var obj = d3selection.select("ellipse");
+    var _x = toFloat(obj.attr("cx")) || 0;
+    var _y = toFloat(obj.attr("cy")) || 0;
+    return {
+        x: _x,
+        y: _y
+    };
+}
+/* Helper function to connect two RDDs with a curved edge. */
+function connectRDDs(fromRDDId, toRDDId, edgesContainer, svgContainer) {
+    var fromNodeId = "g#node" + fromRDDId;
+    var toNodeId = "g#node" + toRDDId;
+    
+    //transform clust2 manually because we render the two clusters in the same g element
+	svgContainer.select("g#clust2").attr("transform","translate(30,0)");
+	svgContainer.select("g#node7").attr("transform","translate(30,0)");
+	svgContainer.select("g#node8").attr("transform","translate(30,0)");
+	svgContainer.select("g#edge6").attr("transform","translate(30,0)");
+
+    var fromPos = getAbsolutePosition(svgContainer.select(fromNodeId));
+    var toPos = getAbsolutePosition(svgContainer.select(toNodeId));
+
+    // On the job page, RDDs are rendered as dots (circles). When rendering the path,
+    // we need to account for the radii of these circles. Otherwise the arrow heads
+    // will bleed into the circle itself.
+    var delta1 = toFloat(svgContainer.select(fromNodeId).select("ellipse").attr("rx"));
+    var delta2 = toFloat(svgContainer.select(toNodeId).select("ellipse").attr("rx"));
+    if (fromPos.x < toPos.x) {
+        fromPos.x += delta1;
+        toPos.x -= delta2;
+    } else if (fromPos.x > toPos.x) {
+        fromPos.x -= delta1;
+        toPos.x += delta2;
+    }
+
+    toPos.x += 20;
+
+    var points;
+    if (fromPos.y == toPos.y) {
+        // If they are on the same rank, curve the middle part of the edge
+        // upward a little to avoid interference with things in between
+        // e.g.       _______
+        //      _____/       \_____
+        points = [
+            [fromPos.x, fromPos.y],
+            [fromPos.x + (toPos.x - fromPos.x) * 0.2, fromPos.y],
+            [fromPos.x + (toPos.x - fromPos.x) * 0.3, fromPos.y - 20],
+            [fromPos.x + (toPos.x - fromPos.x) * 0.7, fromPos.y - 20],
+            [fromPos.x + (toPos.x - fromPos.x) * 0.8, toPos.y],
+            [toPos.x, toPos.y]
+        ];
+    } else {
+        // Otherwise, draw a curved edge that flattens out on both ends
+        // e.g.       _____
+        //           /
+        //          |
+        //    _____/
+        points = [
+            {x: fromPos.x, y: fromPos.y},
+            {x: fromPos.x + (toPos.x - fromPos.x) * 0.4, y: fromPos.y},
+            {x: fromPos.x + (toPos.x - fromPos.x) * 0.6, y: toPos.y},
+            {x: toPos.x, y: toPos.y}
+        ];
+    }
+
+    //define mark arrow
+    var defs = svgContainer.append("defs");
+
+    var arrowMarker = defs.append("marker")
+                            .attr("id","arrow")
+                            .attr("markerUnits","strokeWidth")
+                            .attr("markerWidth","14")
+                            .attr("markerHeight","14")
+                            .attr("viewBox","0 0 14 14") 
+                            .attr("refX","6")
+                            .attr("refY","6")
+                            .attr("orient","auto");
+
+    var arrow_path = "M2,2 L14,7 L2,12 L2,2";
+                            
+    arrowMarker.append("path")
+                .attr("d",arrow_path)
+                .attr("fill","#000");
+
+    var line = d3.line()
+                 .x(function(d) {return d.x; })
+                 .y(function(d) {return d.y; })
+                 .curve(d3.curveBasis);
+
+    //transform the line according to g#graph0 element
+    //get the x y values
+    var current = svgContainer.select("g#graph0");
+    var currentx = current.attr("transform");
+    var split = currentx.split(" ");
+    var x = split[3].split("(")[1];
+    var y = split[4].split(")")[0];
+
+    //render the line
+    edgesContainer.append("path")
+                .style("fill","none")
+                .style("stroke","black")
+                .style("stroke-width","1px").attr("d", line(points))
+                .attr("transform","translate("+ x +","+ y +")")
+                .attr("marker-end", "url(#arrow)");
+
+}
+
+
+/* Helper function to convert attributes to numeric values. */
+function toFloat(f) {
+    if (f) {
+        return parseFloat(f.toString().replace(/px$/, ""));
+    } else {
+        return f;
+    }
+}
+
+//dot data
+var dots = [
+    [
+        'digraph  ""{',
+        'subgraph clusterstage_0 {',
+        '    label="Stage 0"',
+        '    node [shape=circle, style="wedged"]',
+        '    a0 [label="hadoopFile", fillcolor="lightcoral;0.8:palegreen"]',
+        '    a1 [label="map", fillcolor="yellow;0.8:orange"]',
+        '    a2 [label="filterWithProfiling", fontsize=8, fillcolor="yellow;0.3:orange", tooltip = "success:0.3 \nfail:0.7"]',
+        '    a3 [label="flatMapWithProfiling", fontsize=8, fillcolor="lightcoral;0.8:palegreen"]',
+        '    a4 [label="watchpoint", fillcolor="lightcoral;0.8:palegreen"]',
+        '    a5 [label="map", fillcolor="lightcoral;0.8:palegreen"]',
+        '    a0->a1->a2->a3->a4->a5',
+        '}',
+        'subgraph clusterstage_1 {',
+        '        label="Stage 1"',
+        '    node [shape=circle, style="wedged"]',
+        '    b0 [label = "reduceByKey", fontsize=12.5, fillcolor="yellow;0.5:orange"]',
+        '    b1 [label = "map", fillcolor="yellow;0.5:orange"]',
+        '    b0->b1',
+        '}',
+        '}'
+    ],
+];
+
+
+</script>
+
+			<script type="text/javascript">toggleDagViz(true);</script>
+		</div>
+							</div>
+
+
+
+							<input id="websocketport" name="portws" value="9099" type="hidden">
+						</div>
+
+
+						<div id="col2">
+							<div>
+								<h3>
+									WordCount.scala
+								</h3>
+							</div>
+							<div>
+
+								<textarea id="code" name="code" style="display: none;">									
+package org.apache.spark.examples.bigdebug
+
+import org.apache.spark.SparkConf
+import org.apache.spark.bdd.{ BDConfiguration}
+import org.apache.spark.lineage.LineageContext
+import org.apache.spark.lineage.LineageContext._
+/**
+ * Created by ali on 6/23/17.
+ */
+object WordCount {
+	def main (args: Array[String]) {
+		val conf = new SparkConf()
+		var file = ""
+		if (args.length &gt; 1){
+			val master = args(1)
+			file = args(0)
+			conf.setAppName("BigDebug--WordCount").setMaster(master)
+		}
+		else{
+			file = args(0)
+			conf.setAppName("BigDebug--WordCount").setMaster("local[4]")
+		}
+		val bconf = new BDConfiguration()
+		bconf.setCrashMonitoring(true)
+		
+bconf.setFilePath("/home/ali/work/temp/git/bigdebug2.0/bigdebug/examples/src/main/scala/org/apache/spark/examples/bigdebug/WordCount.scala")
+
+		bconf.setCrashResolution("lm")
+		val lc = new LineageContext(conf, bconf)
+		 lc.textFile(file).filterWithProfiling { s =&gt;
+			true
+		}.flatMapWithProfiling{ s =&gt;
+			if(s.contains("x")){
+					Thread.sleep(2000)
+			}
+			s.split(" ")}
+			.watchpoint( s =&gt; s.contains(","))
+			//.simultedBreakpoint()
+			.map{ p =&gt;
+				(p,1)}
+			.reduceByKey(_+_)
+			.map(s =&gt; s)
+			.collect().foreach(println)
+	}
+}
+
+
+object WordCountComm {
+	def main (args: Array[String]) {
+		val conf = new SparkConf()
+		var file = ""
+		if (args.length &gt; 1){
+			val master = args(1)
+			file = args(0)
+			conf.setAppName("BigDebug--WordCount").setMaster(master)
+		}
+		else{
+			file = args(0)
+			conf.setAppName("BigDebug--WordCount").setMaster("local[4]")
+		}
+		val bconf = new BDConfiguration()
+		bconf.setCrashMonitoring(true)
+		
+bconf.setFilePath("/home/ali/work/temp/git/bigdebug2.0/bigdebug/examples/src/main/scala/org/apache/spark/examples/bigdebug/WordCount.scala")
+
+		bconf.setCrashResolution("lm")
+		val lc = new LineageContext(conf, bconf)
+		val lines = lc.textFile(file)
+		lines.filterWithProfiling { s =&gt;
+		s.contains("pa")
+		}.collect().foreach(println)
+	}
+}
+//object WordCountSpark {
+//	def main (args: Array[String]) {
+//		val conf = new SparkConf()
+//		var file = ""
+//		if (args.length &gt; 1){
+//			val master = args(1)
+//			file = args(0)
+//			conf.setAppName("BigDebug--WordCount").setMaster(master)
+//		}
+//		else{
+//			file = args(0)
+//			conf.setAppName("BigDebug--WordCount").setMaster("local[4]")
+//		}
+//
+//		val sc = new SparkContext(conf)
+//
+//		//lc.se
+//		val lines = sc.textFile(file)
+//			lines.cache()
+//		lines.flatMap{ s =&gt;
+//			s.split(" ")}
+//			.map{ p =&gt;
+//			(p,1)}
+//			.reduceByKey(_+_)
+//			.collect().foreach(println)
+//
+//
+//	}
+//}
+								</textarea><div class="CodeMirror cm-s-default"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 5px; left: 46px;"><textarea style="position: absolute; padding: 0px; width: 1px; height: 1em; outline: medium none;" autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" wrap="off"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true" style="display: block; bottom: 0px; width: 18px; pointer-events: none;"><div style="min-width: 1px; height: 1988px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true" style="display: block; right: 0px; left: 41px; height: 18px; pointer-events: none;"><div style="height: 100%; min-height: 1px; width: 1250px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1" draggable="true"><div class="CodeMirror-sizer" style="margin-left: 41px; margin-bottom: 0px; border-right-width: 30px; min-height: 1988px; min-width: 1250.2px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines"><div style="position: relative; outline: medium none;"><div class="CodeMirror-measure"><span><span>​</span>x</span></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors"><div class="CodeMirror-cursor" style="left: 4px; top: 0px; height: 20px;">&nbsp;</div></div><div class="CodeMirror-code" style=""><div style="position: relative;" class="CodeMirror-activeline"><div class="CodeMirror-activeline-background line-bp CodeMirror-linebackground"></div><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">1</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">package</span> <span class="cm-def">org</span>.<span class="cm-variable">apache</span>.<span class="cm-variable">spark</span>.<span class="cm-variable">examples</span>.<span class="cm-variable">bigdebug</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">2</div></div><pre class=" CodeMirror-line "><span><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">3</div></div><pre class=" CodeMirror-line "><span><span class="cm-keyword">import</span> <span class="cm-variable">org</span>.<span class="cm-variable">apache</span>.<span class="cm-variable">spark</span>.<span class="cm-variable">SparkConf</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">4</div></div><pre class=" CodeMirror-line "><span><span class="cm-keyword">import</span> <span class="cm-variable">org</span>.<span class="cm-variable">apache</span>.<span class="cm-variable">spark</span>.<span class="cm-variable">bdd</span>.{ <span class="cm-variable">BDConfiguration</span>}</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">5</div></div><pre class=" CodeMirror-line "><span><span class="cm-keyword">import</span> <span class="cm-variable">org</span>.<span class="cm-variable">apache</span>.<span class="cm-variable">spark</span>.<span class="cm-variable">lineage</span>.<span class="cm-variable">LineageContext</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">6</div></div><pre class=" CodeMirror-line "><span><span class="cm-keyword">import</span> <span class="cm-variable">org</span>.<span class="cm-variable">apache</span>.<span class="cm-variable">spark</span>.<span class="cm-variable">lineage</span>.<span class="cm-variable">LineageContext</span>.<span class="cm-keyword">_</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">7</div></div><pre class=" CodeMirror-line "><span><span class="cm-comment">/**</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">8</div></div><pre class=" CodeMirror-line "><span> <span class="cm-comment">* Created by ali on 6/23/17.</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">9</div></div><pre class=" CodeMirror-line "><span> <span class="cm-comment">*/</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">10</div></div><pre class=" CodeMirror-line "><span><span class="cm-keyword">object</span> <span class="cm-def">WordCount</span> {</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">11</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">def</span> <span class="cm-def">main</span> (<span class="cm-variable">args</span>: <span class="cm-variable-3">Array</span>[<span class="cm-variable-3">String</span>]) {</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">12</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">val</span> <span class="cm-def">conf</span> <span class="cm-operator">=</span> <span class="cm-keyword">new</span> <span class="cm-variable">SparkConf</span>()</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">13</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">var</span> <span class="cm-def">file</span> <span class="cm-operator">=</span> <span class="cm-string">""</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">14</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">if</span> (<span class="cm-variable">args</span>.<span class="cm-variable">length</span> <span class="cm-operator">&gt;</span> <span class="cm-number">1</span>){</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">15</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">val</span> <span class="cm-def">master</span> <span class="cm-operator">=</span> <span class="cm-variable">args</span>(<span class="cm-number">1</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">16</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">file</span> <span class="cm-operator">=</span> <span class="cm-variable">args</span>(<span class="cm-number">0</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">17</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">conf</span>.<span class="cm-variable">setAppName</span>(<span class="cm-string">"BigDebug--WordCount"</span>).<span class="cm-variable">setMaster</span>(<span class="cm-variable">master</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">18</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span>}</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">19</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">else</span>{</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">20</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">file</span> <span class="cm-operator">=</span> <span class="cm-variable">args</span>(<span class="cm-number">0</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">21</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">conf</span>.<span class="cm-variable">setAppName</span>(<span class="cm-string">"BigDebug--WordCount"</span>).<span class="cm-variable">setMaster</span>(<span class="cm-string">"local[4]"</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">22</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span>}</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">23</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">val</span> <span class="cm-def">bconf</span> <span class="cm-operator">=</span> <span class="cm-keyword">new</span> <span class="cm-variable">BDConfiguration</span>()</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">24</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">bconf</span>.<span class="cm-variable">setCrashMonitoring</span>(<span class="cm-atom">true</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">25</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">bconf</span>.<span class="cm-variable">setFilePath</span>(<span class="cm-string">"/home/ali/work/temp/git/bigdebug2.0/bigdebug/examples/src/main/scala/org/apache/spark/examples/bigdebug/WordCount.scala"</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">26</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">bconf</span>.<span class="cm-variable">setCrashResolution</span>(<span class="cm-string">"lm"</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">27</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">val</span> <span class="cm-def">lc</span> <span class="cm-operator">=</span> <span class="cm-keyword">new</span> <span class="cm-variable">LineageContext</span>(<span class="cm-variable">conf</span>, <span class="cm-variable">bconf</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">28</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span> <span class="cm-variable">lc</span>.<span class="cm-variable">textFile</span>(<span class="cm-variable">file</span>).<span class="cm-variable">filterWithProfiling</span> { <span class="cm-variable">s</span> <span class="cm-operator">=&gt;</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">29</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-atom">true</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">30</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span>}.<span class="cm-variable">flatMapWithProfiling</span>{ <span class="cm-variable">s</span> <span class="cm-operator">=&gt;</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">31</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">if</span>(<span class="cm-variable">s</span>.<span class="cm-variable">contains</span>(<span class="cm-string">"x"</span>)){</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">32</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable-3">Thread</span>.<span class="cm-variable">sleep</span>(<span class="cm-number">2000</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">33</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span>}</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">34</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">s</span>.<span class="cm-variable">split</span>(<span class="cm-string">" "</span>)}</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">35</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span>.<span class="cm-variable">watchpoint</span>( <span class="cm-variable">s</span> <span class="cm-operator">=&gt;</span> <span class="cm-variable">s</span>.<span class="cm-variable">contains</span>(<span class="cm-string">","</span>))</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">36</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-comment">//.simultedBreakpoint()</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">37</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span>.<span class="cm-variable">map</span>{ <span class="cm-variable">p</span> <span class="cm-operator">=&gt;</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">38</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span>(<span class="cm-variable">p</span>,<span class="cm-number">1</span>)}</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">39</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span>.<span class="cm-variable">reduceByKey</span>(<span class="cm-keyword">_</span><span class="cm-operator">+</span><span class="cm-keyword">_</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">40</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span>.<span class="cm-variable">map</span>(<span class="cm-variable">s</span> <span class="cm-operator">=&gt;</span> <span class="cm-variable">s</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">41</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span>.<span class="cm-variable">collect</span>().<span class="cm-variable">foreach</span>(<span class="cm-keyword">println</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">42</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span>}</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">43</div></div><pre class=" CodeMirror-line "><span>}</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">44</div></div><pre class=" CodeMirror-line "><span><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">45</div></div><pre class=" CodeMirror-line "><span><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">46</div></div><pre class=" CodeMirror-line "><span><span class="cm-keyword">object</span> <span class="cm-def">WordCountComm</span> {</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">47</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">def</span> <span class="cm-def">main</span> (<span class="cm-variable">args</span>: <span class="cm-variable-3">Array</span>[<span class="cm-variable-3">String</span>]) {</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">48</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">val</span> <span class="cm-def">conf</span> <span class="cm-operator">=</span> <span class="cm-keyword">new</span> <span class="cm-variable">SparkConf</span>()</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">49</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">var</span> <span class="cm-def">file</span> <span class="cm-operator">=</span> <span class="cm-string">""</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">50</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">if</span> (<span class="cm-variable">args</span>.<span class="cm-variable">length</span> <span class="cm-operator">&gt;</span> <span class="cm-number">1</span>){</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">51</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">val</span> <span class="cm-def">master</span> <span class="cm-operator">=</span> <span class="cm-variable">args</span>(<span class="cm-number">1</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">52</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">file</span> <span class="cm-operator">=</span> <span class="cm-variable">args</span>(<span class="cm-number">0</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">53</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">conf</span>.<span class="cm-variable">setAppName</span>(<span class="cm-string">"BigDebug--WordCount"</span>).<span class="cm-variable">setMaster</span>(<span class="cm-variable">master</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">54</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span>}</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">55</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">else</span>{</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">56</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">file</span> <span class="cm-operator">=</span> <span class="cm-variable">args</span>(<span class="cm-number">0</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">57</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">conf</span>.<span class="cm-variable">setAppName</span>(<span class="cm-string">"BigDebug--WordCount"</span>).<span class="cm-variable">setMaster</span>(<span class="cm-string">"local[4]"</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">58</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span>}</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">59</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">val</span> <span class="cm-def">bconf</span> <span class="cm-operator">=</span> <span class="cm-keyword">new</span> <span class="cm-variable">BDConfiguration</span>()</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">60</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">bconf</span>.<span class="cm-variable">setCrashMonitoring</span>(<span class="cm-atom">true</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">61</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">bconf</span>.<span class="cm-variable">setFilePath</span>(<span class="cm-string">"/home/ali/work/temp/git/bigdebug2.0/bigdebug/examples/src/main/scala/org/apache/spark/examples/bigdebug/WordCount.scala"</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">62</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">bconf</span>.<span class="cm-variable">setCrashResolution</span>(<span class="cm-string">"lm"</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">63</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">val</span> <span class="cm-def">lc</span> <span class="cm-operator">=</span> <span class="cm-keyword">new</span> <span class="cm-variable">LineageContext</span>(<span class="cm-variable">conf</span>, <span class="cm-variable">bconf</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">64</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-keyword">val</span> <span class="cm-def">lines</span> <span class="cm-operator">=</span> <span class="cm-variable">lc</span>.<span class="cm-variable">textFile</span>(<span class="cm-variable">file</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">65</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">lines</span>.<span class="cm-variable">filterWithProfiling</span> { <span class="cm-variable">s</span> <span class="cm-operator">=&gt;</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">66</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-variable">s</span>.<span class="cm-variable">contains</span>(<span class="cm-string">"pa"</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">67</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span>}.<span class="cm-variable">collect</span>().<span class="cm-variable">foreach</span>(<span class="cm-keyword">println</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">68</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span>}</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">69</div></div><pre class=" CodeMirror-line "><span>}</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">70</div></div><pre class=" CodeMirror-line "><span><span class="cm-comment">//object WordCountSpark {</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">71</div></div><pre class=" CodeMirror-line "><span><span class="cm-comment">//<span class="cm-tab" role="presentation" cm-text="	">  </span>def main (args: Array[String]) {</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">72</div></div><pre class=" CodeMirror-line "><span><span class="cm-comment">//<span class="cm-tab" role="presentation" cm-text="	">  </span><span class="cm-tab" role="presentation" cm-text="	">    </span>val conf = new SparkConf()</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">73</div></div><pre class=" CodeMirror-line "><span><span class="cm-comment">//<span class="cm-tab" role="presentation" cm-text="	">  </span><span class="cm-tab" role="presentation" cm-text="	">    </span>var file = ""</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">74</div></div><pre class=" CodeMirror-line "><span><span class="cm-comment">//<span class="cm-tab" role="presentation" cm-text="	">  </span><span class="cm-tab" role="presentation" cm-text="	">    </span>if (args.length &gt; 1){</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">75</div></div><pre class=" CodeMirror-line "><span><span class="cm-comment">//<span class="cm-tab" role="presentation" cm-text="	">  </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span>val master = args(1)</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">76</div></div><pre class=" CodeMirror-line "><span><span class="cm-comment">//<span class="cm-tab" role="presentation" cm-text="	">  </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span>file = args(0)</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">77</div></div><pre class=" CodeMirror-line "><span><span class="cm-comment">//<span class="cm-tab" role="presentation" cm-text="	">  </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span>conf.setAppName("BigDebug--WordCount").setMaster(master)</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">78</div></div><pre class=" CodeMirror-line "><span><span class="cm-comment">//<span class="cm-tab" role="presentation" cm-text="	">  </span><span class="cm-tab" role="presentation" cm-text="	">    </span>}</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">79</div></div><pre class=" CodeMirror-line "><span><span class="cm-comment">//<span class="cm-tab" role="presentation" cm-text="	">  </span><span class="cm-tab" role="presentation" cm-text="	">    </span>else{</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">80</div></div><pre class=" CodeMirror-line "><span><span class="cm-comment">//<span class="cm-tab" role="presentation" cm-text="	">  </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span>file = args(0)</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">81</div></div><pre class=" CodeMirror-line "><span><span class="cm-comment">//<span class="cm-tab" role="presentation" cm-text="	">  </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span>conf.setAppName("BigDebug--WordCount").setMaster("local[4]")</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">82</div></div><pre class=" CodeMirror-line "><span><span class="cm-comment">//<span class="cm-tab" role="presentation" cm-text="	">  </span><span class="cm-tab" role="presentation" cm-text="	">    </span>}</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">83</div></div><pre class=" CodeMirror-line "><span><span class="cm-comment">//</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">84</div></div><pre class=" CodeMirror-line "><span><span class="cm-comment">//<span class="cm-tab" role="presentation" cm-text="	">  </span><span class="cm-tab" role="presentation" cm-text="	">    </span>val sc = new SparkContext(conf)</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">85</div></div><pre class=" CodeMirror-line "><span><span class="cm-comment">//</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">86</div></div><pre class=" CodeMirror-line "><span><span class="cm-comment">//<span class="cm-tab" role="presentation" cm-text="	">  </span><span class="cm-tab" role="presentation" cm-text="	">    </span>//lc.se</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">87</div></div><pre class=" CodeMirror-line "><span><span class="cm-comment">//<span class="cm-tab" role="presentation" cm-text="	">  </span><span class="cm-tab" role="presentation" cm-text="	">    </span>val lines = sc.textFile(file)</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">88</div></div><pre class=" CodeMirror-line "><span><span class="cm-comment">//<span class="cm-tab" role="presentation" cm-text="	">  </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span>lines.cache()</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">89</div></div><pre class=" CodeMirror-line "><span><span class="cm-comment">//<span class="cm-tab" role="presentation" cm-text="	">  </span><span class="cm-tab" role="presentation" cm-text="	">    </span>lines.flatMap{ s =&gt;</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">90</div></div><pre class=" CodeMirror-line "><span><span class="cm-comment">//<span class="cm-tab" role="presentation" cm-text="	">  </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span>s.split(" ")}</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">91</div></div><pre class=" CodeMirror-line "><span><span class="cm-comment">//<span class="cm-tab" role="presentation" cm-text="	">  </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span>.map{ p =&gt;</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">92</div></div><pre class=" CodeMirror-line "><span><span class="cm-comment">//<span class="cm-tab" role="presentation" cm-text="	">  </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span>(p,1)}</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">93</div></div><pre class=" CodeMirror-line "><span><span class="cm-comment">//<span class="cm-tab" role="presentation" cm-text="	">  </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span>.reduceByKey(_+_)</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">94</div></div><pre class=" CodeMirror-line "><span><span class="cm-comment">//<span class="cm-tab" role="presentation" cm-text="	">  </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span>.collect().foreach(println)</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">95</div></div><pre class=" CodeMirror-line "><span><span class="cm-comment">//</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">96</div></div><pre class=" CodeMirror-line "><span><span class="cm-comment">//</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">97</div></div><pre class=" CodeMirror-line "><span><span class="cm-comment">//<span class="cm-tab" role="presentation" cm-text="	">  </span>}</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">98</div></div><pre class=" CodeMirror-line "><span><span class="cm-comment">//}</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -40px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">99</div></div><pre class=" CodeMirror-line "><span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span><span class="cm-tab" role="presentation" cm-text="	">    </span></span></pre></div></div></div></div></div></div><div style="position: absolute; height: 30px; width: 1px; top: 1988px;"></div><div class="CodeMirror-gutters" style="height: 2018px; left: 1px;"><div class="CodeMirror-gutter CodeMirror-linenumbers" style="width: 29px;"></div><div class="CodeMirror-gutter breakpoints"></div></div></div></div>
+							</div>
+						</div>
+
+					</div>
+				</div>
+				<h3>Task Level Latency</h3>
+			</div><div>
+				<br>
+				<br>
+				<br>
+
+				<div id="chartContainer" style="height: 400px; width: 700px;"><div class="canvasjs-chart-container" style="position: relative; text-align: left; cursor: auto;"><canvas class="canvasjs-chart-canvas" width="1400" height="800" style="width: 700px; height: 400px; position: absolute;"></canvas><canvas class="canvasjs-chart-canvas" width="1400" height="800" style="width: 700px; height: 400px; position: absolute;"></canvas><div class="canvasjs-chart-toolbar" style="position: absolute; right: 1px; top: 1px;"></div><div class="canvasjs-chart-tooltip" style="position: absolute; height: auto; box-shadow: 1px 1px 2px 2px rgba(0, 0, 0, 0.1); z-index: 1000; display: none; border-radius: 5px;"><div style=" width: auto;height: auto;min-width: 50px;line-height: auto;margin: 0px 0px 0px 0px;padding: 5px;font-family: Calibri, Arial, Georgia, serif;font-weight: normal;font-style: italic;font-size: 14px;color: #000000;text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);text-align: left;border: 2px solid gray;background: rgba(255,255,255,.9);text-indent: 0px;white-space: nowrap;border-radius: 5px;-moz-user-select:none;-khtml-user-select: none;-webkit-user-select: none;-ms-user-select: none;user-select: none;} "> Sample Tooltip</div></div><a class="canvasjs-chart-credit" style="outline:none;margin:0px;position:absolute;right:3px;top:386px;color:dimgrey;text-decoration:none;font-size:10px;font-family:Lucida Grande, Lucida Sans Unicode, Arial, sans-serif" tabindex="-1" target="_blank" href="http://canvasjs.com/">CanvasJS.com</a></div></div>
+			</div><div class="well well-large" style="text-align:center;border:1px solid red">
+			<br>
+			<h4>Dump WatchPoints</h4><div>
+			<div class="dropdown">
+				<button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown">Select WatchPoint RDD to See Tapped Data
+					<span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu">
+					<li>
+				<a href="http://rstudio.cs.ucla.edu:4040/debugger/watchpoint?id=4&amp;tid=1">Dump Watch Point
+					4
+					From Tash
+					1
+				</a>
+			</li><li>
+				<a href="http://rstudio.cs.ucla.edu:4040/debugger/watchpoint?id=4&amp;tid=0">Dump Watch Point
+					4
+					From Tash
+					0
+				</a>
+			</li>
+				</ul>
+			</div>
+		</div>
+		</div>
+				</div>
+			
+		<div id="zenmate-widget" style="display: none;"><div id="message" class="plain">
+  <div id="plain-widget">
+    <img class="logo" src="BigDebug--WordCount%20-%20Debugger_files/zenmateLogoBlack.png" srcset="resource://firefox-at-zenmate-dot-com/data/images/zenmateLogoBlack@2x.png 2x">
+    <hr>
+    <h1 id="headline">You're using ZenMate Free.</h1>
+    <div id="description">With ZenMate Free, you are protected but will experience limited speed. Feel the difference with ZenMate Premium now.</div>
+    <button id="submit-btn" data-url="">Try Premium for free</button>
+  </div>
+
+  <iframe id="iframe-widget" allowfullscreen="" src="" height="250" frameborder="0" width="300"></iframe>
+
+  <button id="dismiss-btn">Remind me later</button>
+</div>
+
+<div title="You're protected by ZenMate" id="toggle-btn" class="active"></div>
+</div><span style="position: absolute; left: 0px; top: -20000px; padding: 0px; margin: 0px; border: medium none; white-space: pre; line-height: normal; font-family: Calibri,Optima,Candara,Verdana,Geneva,sans-serif; font-size: 18px; font-weight: normal; display: none;">Mpgyi</span></body></html>
